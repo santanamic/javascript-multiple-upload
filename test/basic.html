@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+	<head>
+	  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <title>Basic::Sample ajax multiple upload preview</title>
+    </head>
+	
+	<body>
+		
+		<div id="upload-pwer">
+                  <input class="insert-files" multiple type="file">
+         </div>
+	<script src="../js/jquery-1.11.3.min.js"></script>
+
+	<script>
+	
+var pictures = [];
+
+$('#upload-pwer').on('change', '.insert-files', function () {		
+	
+	$.each($(this)[0].files, function( index, image ) {		
+		
+		pictures.push(image);
+		
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			var preLink = e.target.result;
+			var itemIMG = '<span><img style="width: 100px; height: auto; display: inline-block;" src="' + preLink + '" /></span>';
+			var insertIMG = $('#upload-pwer').prepend(itemIMG);
+		}
+	
+		dataLink = reader.readAsDataURL(image);
+	
+	});
+	
+});
+
+	</script>
+	
+	</body>
+	
+</html>

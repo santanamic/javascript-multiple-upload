@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <title>Plugin::Sample ajax multiple upload preview</title>
+      <link href="./css/style.css" rel="stylesheet" type="text/css">
+      <link href="./css/demo.css" rel="stylesheet" type="text/css">
+	</head>
+      <div id="wrapper">
+		<div id="header">
+         <div id="nav-container">
+            <div id="nav">
+               <ul class="top">
+                  <li><span><a href="#about" class="active">&#8681; &nbsp; DOWNLOAD</a></span></li>
+               </ul>
+            </div>
+         </div>
+         <div id="logo">
+            <h1><a href="./index.html">Sample ajax multiple upload preview</a></h1>
+            <h2>Creating in 09th, January of 2017 At 00:08 o'clock by WILLIAN SANTANA</h2>
+         </div>
+      </div>
+      <div id="contents-wrapper">
+         <div id="upload-pwer">
+            <div id="image-holder">
+               <div class="thumb-style upload-image">
+                  <input class="insert-files" multiple type="file">
+               </div>
+            </div>
+         </div>
+		<button>SEND DATA</button>
+      </div>
+     </div>
+   <script src="./js/jquery-1.11.3.min.js"></script>
+ <script>
+// Array with images
+ 
+ var pictures = [];
+ 
+// Selecting images for upload
+ 
+$('#upload-pwer').on('change', '.insert-files', function () {		
+
+	// Scrolling through all the selected images in the input file
+	
+	$.each($(this)[0].files, function( index, image ) {		
+		
+		// Declaring values for validation
+		
+		var name = image['name'];
+		var size = image['size'];
+		var type = image['type'].replace('image/', '');
+		
+		// Treating errors
+
+		try { 
+			if ( duplicatePicture(name) === false ) throw 'The image ' + name + ' was already inserted'; // OPICIONAL
+			if ( $('.thumb-image').length >= 25 ) throw 'Limit of images already reached';
+			if( size > 1028576 )  throw 'The image ' + name + ' is too large. Use images of maximum 1mb';
+			if( !((type == 'png') || (type == 'jpg') || (type == 'jpeg')) )  throw 'A imagem ' + name + ' is invalid. Only use images with the following formats: *.png, *.jpg, *.jpeg';
+		}
+	
+		// If there is an error in the current image, close the loop and move to the next image
+		
+		catch(err) {
+			alert(err); return;
+		}
+		
+		// Saving valid images in array
+
+		pictures.push(image);
+		
+		// Creating thumbnails of images
+		
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			var preLink = e.target.result;
+			var primary = (index == 0 && $('.thumb-image.primary').length == 0 ) ? ' primary' : ''; // Highlighting the first image, if there is no previously defined image
+			var itemIMG = '<div data-picture="' + name + '" class="thumb-image thumb-style center' + primary + '"><span class="remove-pic">&#215;</span><div><img src="' + preLink + '" /></div></div>'; // "data-picture" is a unique image ID
+			var insertIMG = $('#image-holder').prepend(itemIMG);
+		}
+	
+		dataLink = reader.readAsDataURL(image);
+	
+	});
+	
+});
+
+// OPTIONAL: add highlight to a picture selected by the user
+
+$('#image-holder').on('click', '.thumb-image div',  function() { 
+	
+	$('.thumb-image').removeClass('primary');
+	
+	$(this).closest('.thumb-image').addClass('primary'); 
+	
+	$('[name="primary-image"]').val($(this).closest('.thumb-image').data('picture')); 
+
+});
+ 
+// OPTIONAL: Deleting an image and its thumbnail by clicking the "X"
+
+$('#image-holder').on('click', '.remove-pic',  function() { 
+	
+	var parent = $(this).closest('.thumb-image');
+	
+	var name = parent.data('picture');
+	
+	$.each(pictures, function( index, data ) {
+		
+		if ( data['name'] === name ) {
+			pictures.splice(index, 1); 
+			
+				if ( parent.hasClass('primary') ) $(".thumb-image").first().addClass('primary');
+			
+			parent.remove(); return false;
+		}
+		
+	});
+	
+});
+
+// OPTIONAL: Preventing duplicate images from being inserted into the "pictures" array
+
+function duplicatePicture(name) {
+	
+	var r = true;
+	
+	$.each(pictures, function( index, data ) {
+		
+		if ( data['name'] === name ) {
+			r = false; return false;
+		}
+		
+	});
+	
+	return r;
+}
+
+// SENDING DATA TO THE SERVER
+
+$('button').on('click', function() {
+
+	var FormPictures = new FormData(); //Optionally you can enter your data form here: var myForm = $('#my-form')[0]; new FormData(myForm); 
+
+	$.each(pictures, function(i, file) {
+		FormPictures.append('file-'+i, file); // separating and renaming files
+	}); 
+
+	// SENDING
+
+	$.ajax({
+		url: 'sever/post.php',
+		data: FormPictures,
+		cache: false,
+		contentType: false,
+		processData: false,
+		type: 'POST',
+		success: function(data){
+			console.log(data);
+		}
+	});
+
+});
+
+
+// Response server
+
+/*
+
+Array
+(
+    [file-0] => Array
+        (
+            [name] => bianca-01.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\wamp64\tmp\phpE7CA.tmp
+            [error] => 0
+            [size] => 124859
+        )
+
+    [file-1] => Array
+        (
+            [name] => bianca-02.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\wamp64\tmp\phpE7DA.tmp
+            [error] => 0
+            [size] => 77249
+        )
+
+    [file-2] => Array
+        (
+            [name] => bianca-03.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\wamp64\tmp\phpE7DB.tmp
+            [error] => 0
+            [size] => 73843
+        )
+
+    [file-3] => Array
+        (
+            [name] => bianca-04.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\wamp64\tmp\phpE7EC.tmp
+            [error] => 0
+            [size] => 93533
+        )
+
+)
+
+*/
+
+</script>
+      </body>
+</html>

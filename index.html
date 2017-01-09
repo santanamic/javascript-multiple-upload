@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+      <head>
+	  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <title>Plugin::Sample ajax multiple upload preview</title>
+      <link href="./css/style.css" rel="stylesheet" type="text/css">
+      <link href="./css/multiple-upload.css" rel="stylesheet" type="text/css">
+      </head>
+	  <body>
+	  <div id="wrapper">
+		<div id="header">
+         <div id="nav-container">
+            <div id="nav">
+               <ul class="top">
+                  <li><span><a href="#about" class="active">&#8681; &nbsp; DOWNLOAD</a></span></li>
+               </ul>
+            </div>
+         </div>
+         <div id="logo">
+            <h1>Sample ajax multiple upload preview</h1>
+            <h2>Creating in 09th, January of 2017 At 00:08 o'clock by WILLIAN SANTANA</h2>
+         </div>
+      </div>
+      <div id="contents-wrapper">
+  <div class="code">
+    
+    <h3>Introduction of Ajax Mltiple Upload Preview</h3><br>
+<br>
+<img src="./images/sample.gif">
+<br><br>
+<p>Using a function FileReader() to HTML5, users may have a preview of the image before it will pass to the server.</p><br>
+</div>
+<div class="code">
+  
+  <h3>This is the basic version.</h3>
+  
+  
+  <strong>JAVASCRIPT</strong>
+
+<span>1 - Import jquery file</span>
+
+<p></p>
+<blockquote>&lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"&gt;&lt;/script&gt;
+</blockquote>
+
+<span>2 - This is the basics to get started</span>
+
+
+
+<blockquote> var pictures = [];
+
+$('#upload-pwer').on('change', '.insert-files', function () {		
+
+	// Scrolling through all the selected images in the input file
+	
+	$.each($(this)[0].files, function( index, image ) {		
+		
+		// Saving images in array
+
+		pictures.push(image);
+		
+		// Creating thumbnails of images
+		
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			var preLink = e.target.result;
+			var itemIMG = '&lt;div&gt;&lt;img src="' + preLink + '" /&gt;&lt;/div&gt;';
+			var insertIMG = $('#upload-pwer').prepend(itemIMG);
+		}
+	
+		dataLink = reader.readAsDataURL(image);
+	
+	});
+	
+});
+</blockquote>
+
+<strong>HTML</strong><span>1 - insert code basic content and button input file</span>
+
+<blockquote>         &lt;div id="upload-pwer"&gt;
+                  &lt;input class="insert-files" multiple type="file"&gt;
+         &lt;/div&gt;
+</blockquote>
+
+</div>
+
+<div class="code">
+ <h3>View full demo</h3><br>
+<br>
+<p>View full demo for <a href="./demo.html">Ajax code multiple upload preview</a></p>
+
+</div>
+  
+</div>
+     </div>
+  
+</body></html>
