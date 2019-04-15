@@ -1,4 +1,4 @@
-# ajax-multiple-upload
+# Ajax Multipl Upload
 
 ![Screenshot](https://santanamic.github.io/ajax-multiple-upload/images/sample.gif)
 
